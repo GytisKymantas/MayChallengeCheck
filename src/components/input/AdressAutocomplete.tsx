@@ -4,6 +4,9 @@ import { Controller } from 'react-hook-form';
 import { getAddressDetails } from '../../utils/address-autocomplete';
 import { countries } from '../../utils/countries';
 import { ErrorSpan } from './InputField';
+import styled, { css } from 'styled-components';
+import { Flex } from '../Flex';
+import { Box } from '../Box';
 
 interface AddressAutoProps {
   control: any;
@@ -72,7 +75,7 @@ AddressAutoProps) => {
       boxSizing: 'border-box',
       width: '100%',
       height: '100%',
-      padding: '10.5px',
+      padding: '8.5px 8.5px 8.5px 12px',
       transition: 'all 0.2s ease-out',
       color: isError ? 'red' : 'black',
       border: isError ? '1px solid red' : '1px solid #e0e0e0',
@@ -80,6 +83,8 @@ AddressAutoProps) => {
       borderRadius: '0.5rem',
     }),
   });
+
+  console.log(!!data, 'this is data');
   return (
     <Controller
       control={control}
@@ -94,7 +99,18 @@ AddressAutoProps) => {
         };
 
         return (
-          <>
+          <Box position='relative'>
+            <LabelContainer>
+              {' '}
+              <Label
+                hasInput={!!data}
+                isAddress={true}
+                error={!!isAddressError}
+              >
+                Address{' '}
+              </Label>
+            </LabelContainer>
+
             <GooglePlacesAutocomplete
               apiKey={GOOGLE_GEOLOCATION_KEY}
               apiOptions={{ language: 'en' }}
@@ -114,7 +130,7 @@ AddressAutoProps) => {
                 noOptionsMessage: () => null,
                 onChange: handleChange,
                 onInputChange: handleInputChange,
-                placeholder: 'Address',
+                placeholder: '',
                 styles: getSelectStyles(!!isAddressError),
 
                 components: {
@@ -124,9 +140,34 @@ AddressAutoProps) => {
               }}
             />
             {!!isAddressError && <ErrorSpan>{isAddressError}</ErrorSpan>}
-          </>
+          </Box>
         );
       }}
     />
   );
 };
+
+export const LabelContainer = styled(Flex)`
+  width: 100% !important;
+  position: absolute;
+  top: -32.6px;
+  left: 0;
+`;
+
+const Label = styled.label<{
+  hasInput?: boolean;
+  error: boolean;
+  isAddress?: boolean;
+}>`
+  z-index: 4;
+  pointer-events: none;
+  transform: ${(props) =>
+    props.hasInput
+      ? 'translate(16px, 35px) scale(0.8)'
+      : 'translate(18px, 50px) scale(1)'};
+  transform-origin: left;
+
+  transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  color: ${({ error }) => (error ? 'red' : '#828282')};
+  line-height: 1;
+`;
