@@ -1,3 +1,5 @@
+import { getValue } from '@testing-library/user-event/dist/utils';
+import { watch } from 'fs';
 import styled, { css } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { StorageKeys } from '../../utils/types';
@@ -13,9 +15,10 @@ interface InputFieldProps {
   setValue?: any;
   watch?: any;
   type?: any;
+  getValues?: any;
 }
 
-export const InputField = ({
+export const CardInputField = ({
   name,
   placeholder,
   register,
@@ -23,14 +26,34 @@ export const InputField = ({
   value,
   type = 'text',
   setValue,
+  getValues,
 }: InputFieldProps) => {
   const hasInput = !!value && !errors;
 
-  // const onChangeValidation = (e: any) => {
-  //   if (name === StorageKeys.expirationDate) {
-  //     handleChangeExpiration(e, setValue);
-  //   }
-  // };
+  const onChangeValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const trimmedValue = value.replace(/\s/g, '').replace(/\D/g, '');
+
+    if (name === StorageKeys.cardNumber) {
+      if (value.length <= 16) {
+        return setValue(name, trimmedValue);
+      }
+    }
+
+    if (name === StorageKeys.securityCode) {
+      if (value.length <= 3) {
+        return setValue(name, trimmedValue);
+      }
+    }
+
+    if (name === StorageKeys.expirationDate) {
+      if (value.length <= 5) {
+        return setValue(name, trimmedValue);
+      }
+    }
+
+    return;
+  };
 
   return (
     <FlexStyled flexDirection='column'>
@@ -45,6 +68,8 @@ export const InputField = ({
         isError={!!errors}
         hasInput={hasInput}
         {...register(name)}
+        value={getValues(name)}
+        onChange={(e: any) => onChangeValidation(e)}
       />
 
       {errors && <ErrorSpan>{errors}</ErrorSpan>}
@@ -78,7 +103,7 @@ export const Label = styled.label<{
 
   transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
   color: ${({ error }) =>
-    error ? ` ${theme.colors.red} ` : `${theme.colors.gray4}`};
+    error ? `${theme.colors.red}` : `${theme.colors.gray4}`};
   font-size: 14px;
   line-height: 1;
 `;

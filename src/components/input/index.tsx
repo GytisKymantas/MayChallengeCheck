@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import styled, { css } from 'styled-components';
+import { theme } from '../../styles/theme';
 
 interface InputProps extends PropsWithChildren<{}> {
   value: string;
@@ -54,7 +55,7 @@ const Wrapper = styled.div<{ isError?: boolean }>`
     isError &&
     css`
       margin-bottom: 0.6rem;
-      border-color: black;
+      border-color: ${theme.colors.black};
     `}
 `;
 
@@ -63,15 +64,15 @@ const InputField = styled.input<{ isError?: boolean }>`
   height: 100%;
   padding: 1.5rem;
   transition: all 0.2s ease-out;
-  color: black;
-  border: 1px solid black;
+  color: ${theme.colors.black};
+  border: 1px solid ${theme.colors.black};
   background-clip: padding-box;
   border-radius: 0.5rem;
 
   &:focus,
   &:active {
-    border-color: black;
-    box-shadow: 0 0 0 1px black;
+    border-color: ${theme.colors.black};
+    box-shadow: 0 0 0 1px ${theme.colors.black};
     outline: none;
   }
 
@@ -79,12 +80,12 @@ const InputField = styled.input<{ isError?: boolean }>`
     isError &&
     css`
       margin-bottom: 0.6rem;
-      border-color: red;
+      border-color: ${theme.colors.red};
     `}
 `;
 
 const Error = styled.div`
-  color: red;
+  color: ${theme.colors.red};
   font-size: 1.4rem;
   margin-bottom: 0.45rem;
   font-weight: 400;

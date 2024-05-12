@@ -7,33 +7,32 @@ import { ErrorSpan } from './InputField';
 import styled, { css } from 'styled-components';
 import { Flex } from '../Flex';
 import { Box } from '../Box';
+import { watch } from 'fs';
+import { theme } from '../../styles/theme';
 
 interface AddressAutoProps {
   control: any;
-  // setKey: any;
   setValue: any;
-  isAddressError?: string; // Assuming isAddressError is a string or null
+  isAddressError?: string;
   getValues: any;
-  // setData?: any;
-  // data?: any;
+  initialData?: any;
+  watch: any;
 }
 
 export const GOOGLE_GEOLOCATION_KEY = 'AIzaSyAiAZ_gPFKxGR39WiYMIrlV2p0YjXWgx0c';
 
 export const AddressAutocomplete = ({
   control,
-  // setKey,
   setValue,
   isAddressError,
   getValues,
-}: // setData,
-// data,
-AddressAutoProps) => {
-  const [data, setData] = useState();
+  watch,
+  initialData,
+}: AddressAutoProps) => {
+  const [data, setData] = useState(initialData);
   const [key, setKey] = useState<any>(new Date().getTime());
   const handleAddressSelect = async () => {
     const details = await getAddressDetails(getValues('addressAuto'));
-
     const country = countries.find(
       (country) => country?.value === details?.country
     );
@@ -41,20 +40,11 @@ AddressAutoProps) => {
     const state = country?.states?.find(
       (state) => state?.value === details?.state
     );
-
     if (details && country && state) {
       setValue('zip', details.postalCode ?? '');
       setValue('country', country.label ?? '');
       setValue('city', details.city ?? '');
-      setValue('state', state.label ?? '');
-
-      // setData((prev) => ({
-      //   ...prev,
-      //   country: country?.label ?? '',
-      //   state: state?.label ?? '',
-      //   city: details?.city ?? '',
-      //   zip: details?.postalCode ?? '',
-      // }));
+      setValue('state', state.value ?? '');
     }
   };
 
@@ -64,7 +54,6 @@ AddressAutoProps) => {
   ) => {
     if (action === 'input-change') {
       setValue('address', inputValue);
-      console.log(inputValue, 'input valueezz');
       setData(inputValue);
     }
   };
@@ -77,19 +66,20 @@ AddressAutoProps) => {
       height: '100%',
       padding: '8.5px 8.5px 8.5px 12px',
       transition: 'all 0.2s ease-out',
-      color: isError ? 'red' : 'black',
-      border: isError ? '1px solid red' : '1px solid #e0e0e0',
+      color: isError ? `${theme.colors.red}` : `${theme.colors.black}`,
+      border: isError
+        ? `1px solid ${theme.colors.red}`
+        : `1px solid ${theme.colors.gray}`,
       backgroundClip: 'padding-box',
       borderRadius: '0.5rem',
     }),
   });
 
-  console.log(!!data, 'this is data');
   return (
     <Controller
       control={control}
       name='addressAuto'
-      render={({ field: { value: bam, onChange } }) => {
+      render={({ field: { onChange } }) => {
         const handleChange = (selectedAddress: any) => {
           onChange(selectedAddress);
           handleAddressSelect();
@@ -117,7 +107,7 @@ AddressAutoProps) => {
               autocompletionRequest={{
                 types: ['address'],
                 componentRestrictions: {
-                  country: 'us',
+                  country: ['us', 'ca'],
                 },
               }}
               selectProps={{
@@ -126,7 +116,7 @@ AddressAutoProps) => {
                 value: data
                   ? ({ label: data, value: data } as any)
                   : ('' as any),
-                inputValue: data as any,
+                inputValue: data ?? ('bam' as any),
                 noOptionsMessage: () => null,
                 onChange: handleChange,
                 onInputChange: handleInputChange,
@@ -168,6 +158,7 @@ const Label = styled.label<{
   transform-origin: left;
 
   transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-  color: ${({ error }) => (error ? 'red' : '#828282')};
+  color: ${({ error }) =>
+    error ? `${theme.colors.red}` : `${theme.colors.gray4}`};
   line-height: 1;
 `;

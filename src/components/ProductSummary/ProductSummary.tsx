@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box } from '../Box';
 import styled from 'styled-components';
 import { Flex } from '../Flex';
-import { BenefitsSection } from './elements/BenefitsSection';
 import { ReactComponent as ArrowUp } from './icons/arrow_up.svg';
 import { ReactComponent as ArrowDown } from './icons/arrow_down.svg';
 import { tabletMF, useQuery } from '../../styles/useQuery';
+import { theme } from '../../styles/theme';
 
 export const ProductSummary = () => {
   const [isOverView, setIsOverView] = useState(false);
@@ -22,7 +22,7 @@ export const ProductSummary = () => {
       <InnerContainer width='405px' flexDirection='column'>
         {!isTabletMF && (
           <>
-            <Flex justifyContent='space-between'>
+            <OrderSummaryContainer justifyContent='space-between'>
               <Flex
                 alignItems='center'
                 gap='4px'
@@ -32,64 +32,76 @@ export const ProductSummary = () => {
                 {isOverView ? <ArrowDown /> : <ArrowUp />}
               </Flex>
               <span>$299.97</span>
-            </Flex>
-            <Divider />
+            </OrderSummaryContainer>
           </>
         )}
         {isOverView && (
           <>
             <Flex gap='16px'>
-              <img src='./icons/product1.png' alt='product' />{' '}
-              <Flex justifyContent='space-between'>
-                <span>LogoIpsum IPL</span>
-                <span>$299.97</span>
+              <img src='icons/product2.png' alt='product' />{' '}
+              <Flex justifyContent='space-between' alignItems='center'>
+                <StyledSpan>
+                  <strong>LogoIpsum IPL</strong>
+                </StyledSpan>
+                <StyledSpan>$299.97</StyledSpan>
               </Flex>
             </Flex>
             <Divider />
             <Flex justifyContent='space-between'>
-              <span>Subtotal</span>
-              <span>$299.97</span>
+              <StyledSpan>Subtotal</StyledSpan>
+              <StyledSpan>$299.97</StyledSpan>
             </Flex>
             <Divider />
             <Flex justifyContent='space-between'>
-              <span>
+              <StyledSpan fontSize='18px'>
                 <strong>Total</strong>
-              </span>
-              <span>
+              </StyledSpan>
+              <StyledSpan fontSize='18px'>
                 <strong>$299.97</strong>
-              </span>
+              </StyledSpan>
             </Flex>
+            {!isTabletMF && <Divider />}
           </>
         )}
-
-        {/* <BenefitsSection /> */}
       </InnerContainer>
     </StyledContainer>
   );
 };
 
 export const StyledContainer = styled(Box)`
-  background: #f5f5f5;
-  padding: 16px;
+  background: ${theme.colors.white2};
+  padding: 16px 16px 0 16px;
+  width: 100%;
+  border-bottom: 1px solid ${theme.colors.gray};
 
   @media ${tabletMF} {
-    padding: 40px;
+    padding: 40px 40px 0 38px;
+    border: none;
   }
 `;
 
-const InnerContainer = styled(Flex)``;
+const InnerContainer = styled(Flex)`
+  margin: 0 auto;
+`;
 
-export const Divider = styled.div`
+const OrderSummaryContainer = styled(Flex)`
+  margin-bottom: 16px;
+  @media ${tabletMF} {
+    margin-bottom: unset;
+  }
+`;
+export const Divider = styled.div<{ isWithoutBottomMargin?: boolean }>`
   width: 100%;
   height: 1px;
-  background-color: #e0e0e0;
-  margin-top: 16px;
+  background-color: ${theme.colors.gray};
+  margin: ${({ isWithoutBottomMargin }) =>
+    isWithoutBottomMargin ? '16px 0 0 0' : '16px 0'};
   @media ${tabletMF} {
-    margin: 25px 0;
+    margin: 16px;
   }
 `;
 
-const StyledSpan = styled.span`
-  font-size: 14px;
-  color: #333333;
+const StyledSpan = styled.span<{ fontSize?: string }>`
+  font-size: ${({ fontSize }) => fontSize || '14px'};
+  color: ${theme.colors.black2};
 `;

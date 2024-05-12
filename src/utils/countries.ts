@@ -5,7 +5,7 @@ export interface IState {
     isExpressShipping?: boolean;
   }
   
-  interface ICountry {
+  export interface ICountry {
     label: string;
     value: string;
     states?: IState[];
@@ -85,36 +85,8 @@ export interface IState {
   ];
   
   export const countries: ICountry[] = [
-    { value: 'AT', label: 'Austria' },
-    { value: 'GB', label: 'United Kingdom' },
-    { value: 'DE', label: 'Germany' },
     { value: 'US', label: 'United States', states: usStates },
     { value: 'CA', label: 'Canada', states: caStates },
-    { value: 'BE', label: 'Belgium' },
-    { value: 'CZ', label: 'Czech Republic' },
-    { value: 'FR', label: 'France' },
-    { value: 'IT', label: 'Italy' },
-    { value: 'NL', label: 'Netherlands' },
-    { value: 'DK', label: 'Denmark' },
-    { value: 'LU', label: 'Luxembourg' },
-    { value: 'SE', label: 'Sweden' },
-    { value: 'FI', label: 'Finland' },
-    { value: 'BG', label: 'Bulgaria' },
-    { value: 'HR', label: 'Croatia' },
-    { value: 'CY', label: 'Cyprus' },
-    { value: 'EE', label: 'Estonia' },
-    { value: 'GR', label: 'Greece' },
-    { value: 'HU', label: 'Hungary' },
-    { value: 'IE', label: 'Ireland' },
-    { value: 'LV', label: 'Latvia' },
-    { value: 'LT', label: 'Lithuania' },
-    { value: 'MT', label: 'Malta' },
-    { value: 'PL', label: 'Poland' },
-    { value: 'PT', label: 'Portugal' },
-    { value: 'RO', label: 'Romania' },
-    { value: 'SK', label: 'Slovakia' },
-    { value: 'SI', label: 'Slovenia' },
-    { value: 'ES', label: 'Spain' },
   ];
   
   export const countriesWithNumericZipcodes = ['AU', 'US'];

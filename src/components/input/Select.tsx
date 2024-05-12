@@ -1,42 +1,51 @@
 import { useState } from 'react';
-import { IState } from '../../utils/countries';
+import { ICountry, IState } from '../../utils/countries';
 import styled, { css } from 'styled-components';
 import { ErrorSpan } from './InputField';
 import { Flex } from '../Flex';
 import { ReactComponent as ArrowDown } from '../ProductSummary/icons/arrow_down.svg';
 import { Box } from '../Box';
+import { StorageKeys } from '../../utils/types';
+import { caStates, usStates } from '../../utils/countries';
+import { theme } from '../../styles/theme';
 
 interface SelectorProps {
-  states: IState[];
   watch: any;
   getValues: any;
   errors?: string;
   setValue: any;
+  countries?: ICountry[];
+  name?: any;
 }
 
 export const Selector = ({
-  states,
   watch,
   getValues,
   setValue,
   errors,
+  name,
+  countries,
 }: SelectorProps) => {
   const [stateSelected, setStateSelected] = useState(false);
+  const isCountrySelector = name === StorageKeys.country;
   const handleChangeSelector = (event: any) => {
     const selectedState = event.target.value;
-    setValue('state', selectedState);
+    setValue(name, selectedState);
     setStateSelected(true);
   };
 
-  const AdjustedStatesArray = states.filter(
-    (state) => state.value !== getValues('state')
-  );
-  const hasInput = !errors && !!watch('state');
+  const States =
+    getValues(StorageKeys.country) === 'Canada' ? caStates : usStates;
+  const AdjustedsDataArray = isCountrySelector ? countries : States;
+
+  const hasInput = !errors && !!watch(name);
 
   return (
     <>
       <FlexStyled flexDirection='column' justifyContent='flex-end'>
-        <LabelContainer>State / Province</LabelContainer>
+        <LabelContainer>
+          {isCountrySelector ? 'Country' : 'State / Province'}
+        </LabelContainer>
         <Box position='absolute' top='15px' right='15px'>
           <ArrowDown />
         </Box>
@@ -45,14 +54,21 @@ export const Selector = ({
           onChange={handleChangeSelector}
           isError={!!errors}
           hasInput={hasInput}
+          value={getValues(name)}
         >
-          {AdjustedStatesArray.map(({ value, label }, index) => (
-            <>
-              <option key={index} value={value}>
-                {label}
-              </option>
-            </>
-          ))}
+          {!stateSelected && !isCountrySelector && (
+            <option>Select state</option>
+          )}
+
+          {AdjustedsDataArray?.map(({ value, label }, index) => {
+            return (
+              <>
+                <option key={index} value={isCountrySelector ? label : value}>
+                  {label}
+                </option>
+              </>
+            );
+          })}
         </StyledSelect>
         {!!errors && <ErrorSpan>{errors}</ErrorSpan>}
       </FlexStyled>
@@ -69,7 +85,7 @@ export const LabelContainer = styled(Flex)`
   position: absolute;
   top: 2.6px;
   left: 12px;
-  color: #828282;
+  color: ${theme.colors.gray4};
   font-size: 12px;
 `;
 
@@ -77,7 +93,7 @@ const StyledSelect = styled.select<{ isError?: boolean; hasInput?: boolean }>`
   width: 100%;
   height: 49.5px;
   padding: 11px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid ${theme.colors.gray};
   border-radius: 0.5rem;
   appearance: none;
   transition: all 0.2s ease-out;
@@ -86,17 +102,17 @@ const StyledSelect = styled.select<{ isError?: boolean; hasInput?: boolean }>`
     isError &&
     css`
       margin-bottom: 0.6rem;
-      border: 1px solid red;
-      color: red;
+      border: 1px solid ${theme.colors.red};
+      color: ${theme.colors.red};
     `}
 
   ${({ hasInput }) =>
     hasInput &&
     css`
-      border: 1px solid green;
+      border: 1px solid ${theme.colors.green};
     `}
 `;
 
 const OptionStyled = styled.option`
-  color: #828282;
+  color: ${theme.colors.gray4};
 `;

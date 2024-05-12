@@ -1,65 +1,51 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { ReactComponent as ServiceLogo } from '../icons/service.svg';
-import { ReactComponent as RatingLogo } from '../icons/rating.svg';
-import { ReactComponent as CashbackLogo } from '../icons/cashback.svg';
 import { Box } from '../../Box';
 import { Flex } from '../../Flex';
-import { StyledContainer } from '../ProductSummary';
+import { BENEFITS_DATA } from '../../../utils/constants';
+import { tabletMF } from '../../../styles/useQuery';
 
 export const BenefitsSection = () => {
   return (
     <StyledContainer>
-      <TypgoraphyStyled>
-        <p>Why Choose LogoIpsum </p>
-      </TypgoraphyStyled>
-      <Flex alignItems='flex-start' gap='10px'>
-        <Box>
-          <ServiceLogo />
-        </Box>
-        <Box>
-          <HeaderStyled>90-Day Money Back Guarantee</HeaderStyled>
-          <ParagraphStyled>
-            We love our products and we're confident you will too! If you're not
-            in love with your LogoIpsum product, our easy return and refund
-            policy is designed to make things as easy as possible for you.{' '}
-          </ParagraphStyled>
-        </Box>
-      </Flex>
-      <Flex alignItems='flex-start' gap='10px'>
-        <Box>
-          <RatingLogo />
-        </Box>
-        <Box>
-          <HeaderStyled>Over 75,000+ Happy Customer</HeaderStyled>
-          <ParagraphStyled>
-            Everyone that tries LogoIpsum says it’s a must-have. We invest a lot
-            of love and care into making our products, so you can enjoy seeing
-            results when using it.
-          </ParagraphStyled>
-        </Box>
-      </Flex>
-      <Flex alignItems='flex-start' gap='10px'>
-        {' '}
-        <Box>
-          <CashbackLogo />
-        </Box>
-        <Box>
-          <HeaderStyled>Professional Customer Support</HeaderStyled>
-          <ParagraphStyled>
-            Our customer service works 24/7 for your satisfaction. Feel free to
-            reach out to us anytime.
-          </ParagraphStyled>
-        </Box>
+      <TypographyStyled>
+        <p>Why Choose LogoIpsum</p>
+      </TypographyStyled>
+      <Flex flexDirection='column' gap='16px'>
+        {BENEFITS_DATA.map(({ logo, header, description }, index) => (
+          <Flex alignItems='flex-start' gap='10px' key={index}>
+            <Box>{logo}</Box>
+            <Flex flexDirection='column' gap='8px'>
+              <HeaderStyled>{header}</HeaderStyled>
+              <ParagraphStyled>{description}</ParagraphStyled>
+            </Flex>
+          </Flex>
+        ))}
       </Flex>
     </StyledContainer>
   );
 };
 
+const StyledContainer = styled(Box)`
+  background: #f5f5f5;
+  padding: 16px 16px 64px 16px;
+  margin: 0 auto;
+  width: 375px;
+  @media ${tabletMF} {
+    padding: 40px 40px 40px 38px;
+    width: 100%;
+    max-width: 500px;
+  }
+`;
+
+const BenefitContainer = styled(Flex)`
+  margin-bottom: 15px;
+`;
+
 const HeaderStyled = styled.h2`
   color: #333;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 12px;
 `;
 
@@ -69,24 +55,42 @@ const ParagraphStyled = styled.p`
   color: #5c5c5c;
 `;
 
-const TypgoraphyStyled = styled.div`
+const TypographyStyled = styled.div`
   display: flex;
+  align-items: center;
   justify-content: center;
-  width: 100%;
-  color: gray;
+  font-size: 14px;
+  color: #333333;
+  margin-bottom: 16px;
 
-  ::before {
-    content: '';
-    height: 1px;
-    width: 100%;
-    border-bottom: 1px solid red;
-    margin-right: 10px;
+  p {
+    width: 340px;
+
+    @media ${tabletMF} {
+      width: 530px;
+    }
   }
-  ::after {
+  &::before {
     content: '';
     height: 1px;
-    width: 100%;
-    border-bottom: 1px solid red;
-    margin-left: 10px;
+    width: 50%;
+    border-bottom: 1px solid #e0e0e0;
+    margin-right: 16px;
+
+    @media ${tabletMF} {
+      width: 100%;
+      margin-right: 10px;
+    }
+  }
+  &::after {
+    content: '';
+    height: 1px;
+    width: 54%;
+    border-bottom: 1px solid #e0e0e0;
+    margin-left: 16px;
+    @media ${tabletMF} {
+      width: 100%;
+      margin-left: 10px;
+    }
   }
 `;

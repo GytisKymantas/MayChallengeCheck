@@ -17,13 +17,17 @@ import {
 } from '../input/AdressAutocomplete';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import { getAddressDetails } from '../../utils/address-autocomplete';
-import { countries, usStates } from '../../utils/countries';
+import { caStates, countries, usStates } from '../../utils/countries';
 import { getValue } from '@testing-library/user-event/dist/utils';
 import { Selector } from '../input/Select';
 import { ReactComponent as CardLogo } from './icons/cards.svg';
 import { ReactComponent as Lock } from './icons/lock.svg';
 import { tabletMF, useQuery } from '../../styles/useQuery';
 import { constants } from 'fs/promises';
+import { setToLocalStorage } from '../../utils/storageHandler';
+import { handleChangeExpiration } from '../../utils/validationFunctions';
+import { CardInputField } from '../input/CardInputField';
+import { theme } from '../../styles/theme';
 
 export const InformationForms = () => {
   const {
@@ -36,60 +40,48 @@ export const InformationForms = () => {
     formState: { errors, isSubmitting },
   } = useForm<TInputFieldSchema>({
     resolver: zodResolver(InputFieldSchema),
+    defaultValues: {
+      country: 'United States',
+    },
   });
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState('option1');
   const { isTabletMF } = useQuery();
 
+  console.log(getValues(), 'getValues');
   const handleOptionChange = (event: any) => {
     setSelectedOption(event.target.value);
   };
 
-  console.log(errors, 'errors');
-  console.log(getValues(), 'current values');
-  console.log(getValues('city'), 'city');
-  const onSubmit = async (data: any) => {
-    console.log(data, 'hello');
-    // if (
-    //   getValues(StorageKeys.email) === Credentials.AdminUsername &&
-    //   getValues(StorageKeys.password) === Credentials.PasswordUsername
-    // ) {
-    //   await new Promise((resolve) => setTimeout(resolve, 1000));
-    //   sessionStorage.setItem(
-    //     StorageKeys.loggedInUser,
-    //     getValues(StorageKeys.email)
-    //   );
-    //   router.push(Routes.Home);
-    // } else {
-    //   toast.error("Incorrect email or password'");
-    // }
+  const onSubmit = (data: any) => {
+    console.log(data);
   };
 
-  // const hiddenClick = (e: { shiftKey: boolean }) => {
-  //   const date = new Date();
+  const isAddressError = errors?.[StorageKeys.addressAuto]?.message;
 
-  //   if (e?.shiftKey) {
-  //     setData({
-  //       first_name: 'McColum',
-  //       last_name: 'Broom',
-  //       address_1: 'Best street 64',
-  //       country: 'US',
-  //       state: 'AL',
-  //       city: 'Los Palangeles',
-  //       postal_code: '12345',
-  //       phone: '+1 234 568 4455',
-  //       email: `qa+${date.getMonth()}${date.getDay()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}@kilo.health`,
-  //       sms_marketing_agreement: true,
-  //       privacy_policy_agreement: true,
-  //       email_marketing_agreement: true,
-  //     });
-  //   }
-  // };
+  const hiddenClick = (e: { shiftKey: boolean }) => {
+    const date = new Date();
 
-  console.log(errors['state'], 'errors');
-  const isAddressError = errors?.['addressAuto']?.message;
+    if (e?.shiftKey) {
+      setValue('city', 'Houston');
+      setValue('country', 'United States');
+      setValue('name', 'Todd');
+      setValue('lastName', 'Baker');
+      setValue('email', 'TestEmail@gmail.com');
+      // setValue('addressAuto', 'Easy street 1');
+      setValue('cardNumber', '4242424242424242');
+      // setValue('addressAuto.label', 'Tood Baker');
+      setValue('address', 'Tood Baker');
+      setValue('zip', '49416');
+      setValue('nameOnCard', 'Todd Baker');
+      setValue('expirationDate', '11/24');
+      setValue('securityCode', '112');
+      setValue('state', 'Alabama');
+    }
+  };
 
   return (
     <FormStyled onSubmit={handleSubmit(onSubmit)}>
+      <div onClick={hiddenClick}>Shift+click to prefill</div>
       <Box>
         <ContactContainer
           flexDirection='column'
@@ -100,8 +92,9 @@ export const InformationForms = () => {
             name={StorageKeys.email}
             placeholder='Email Address'
             register={register}
-            errors={errors?.['email']?.message}
-            value={watch('email')}
+            errors={errors?.[StorageKeys.email]?.message}
+            value={watch(StorageKeys.email)}
+            type={StorageKeys.email}
           />
         </ContactContainer>
 
@@ -115,15 +108,15 @@ export const InformationForms = () => {
               name={StorageKeys.name}
               placeholder='First Name'
               register={register}
-              errors={errors?.['name']?.message}
-              value={watch('name')}
+              errors={errors?.[StorageKeys.name]?.message}
+              value={watch(StorageKeys.name)}
             />
             <InputField
               name={StorageKeys.lastName}
               placeholder='Last Name'
               register={register}
-              errors={errors?.['lastName']?.message}
-              value={watch('lastName')}
+              errors={errors?.[StorageKeys.lastName]?.message}
+              value={watch(StorageKeys.lastName)}
             />
           </Flex>
 
@@ -131,39 +124,53 @@ export const InformationForms = () => {
             control={control}
             setValue={setValue}
             isAddressError={isAddressError}
+            initialData={''}
+            watch={watch}
             getValues={getValues}
           />
 
-          <Flex gap='12px'>
+          {!isTabletMF && (
             <InputField
               name={StorageKeys.city}
               placeholder='City'
               register={register}
-              errors={errors?.['city']?.message}
-              value={watch('city')}
+              errors={errors?.[StorageKeys.city]?.message}
+              value={watch(StorageKeys.city)}
             />
+          )}
+          <Flex gap='12px'>
+            {isTabletMF && (
+              <InputField
+                name={StorageKeys.city}
+                placeholder='City'
+                register={register}
+                errors={errors?.[StorageKeys.city]?.message}
+                value={watch(StorageKeys.city)}
+              />
+            )}
 
             <Selector
               watch={watch}
-              states={usStates}
+              name={StorageKeys.state}
               getValues={getValues}
               setValue={setValue}
-              errors={errors?.['state']?.message}
+              errors={errors?.[StorageKeys.state]?.message}
             />
             <InputField
               name={StorageKeys.zip}
               placeholder='Zip / Postal Code'
               register={register}
-              errors={errors?.['zip']?.message}
-              value={watch('zip')}
+              errors={errors?.[StorageKeys.zip]?.message}
+              value={watch(StorageKeys.zip)}
             />
           </Flex>
-          <InputField
+          <Selector
+            watch={watch}
+            countries={countries}
             name={StorageKeys.country}
-            placeholder='Country'
-            register={register}
-            errors={errors?.['country']?.message}
-            value={watch('country')}
+            getValues={getValues}
+            setValue={setValue}
+            errors={errors?.[StorageKeys.country]?.message}
           />
         </DeliveryContainer>
       </Box>
@@ -189,69 +196,74 @@ export const InformationForms = () => {
             <CardLogo />
           </RadioInputContainer>
           <FlexStyled flexDirection='column' gap='12px'>
-            <InputField
+            <CardInputField
               name={StorageKeys.cardNumber}
               placeholder='Card Number'
               register={register}
-              errors={errors?.['cardNumber']?.message}
-              value={watch('cardNumber')}
+              errors={errors?.[StorageKeys.cardNumber]?.message}
+              value={watch(StorageKeys.cardNumber)}
+              setValue={setValue}
+              getValues={getValues}
             />
             <Flex gap='12px'>
-              <InputField
-                name={StorageKeys.expiration}
+              <CardInputField
+                name={StorageKeys.expirationDate}
                 placeholder='Expiration (MM/YY)'
                 register={register}
-                errors={errors?.['expirationDate']?.message}
-                value={watch('expirationDate')}
+                errors={errors?.[StorageKeys.expirationDate]?.message}
+                value={watch(StorageKeys.expirationDate)}
+                setValue={setValue}
+                getValues={getValues}
               />
-              <InputField
+              <CardInputField
                 name={StorageKeys.securityCode}
                 placeholder='Security code'
                 register={register}
-                errors={errors?.['securityCode']?.message}
-                value={watch('securityCode')}
+                errors={errors?.[StorageKeys.securityCode]?.message}
+                value={watch(StorageKeys.securityCode)}
+                setValue={setValue}
+                getValues={getValues}
               />
             </Flex>
             <InputField
               name={StorageKeys.nameOnCard}
               placeholder='Name on card'
               register={register}
-              errors={errors?.['name']?.message}
-              value={watch('name')}
+              errors={errors?.[StorageKeys.nameOnCard]?.message}
+              value={watch(StorageKeys.nameOnCard)}
             />
           </FlexStyled>
         </Flex>
       </PaymentContainer>
 
-      <Box>
+      <ButtonContainer>
         <StyledButton type='submit'>complete order</StyledButton>
         <Flex justifyContent='center' gap='8px' alignItems='center'>
           <Lock />
           <StyledSpan>All transactions are secure and encrypted</StyledSpan>
         </Flex>
-      </Box>
+      </ButtonContainer>
     </FormStyled>
   );
 };
 
 const FormStyled = styled.form`
   max-width: 559px;
-  margin-top: 16px;
-  padding-bottom: 16px;
+  margin-left: auto;
+  margin-right: auto;
 
   @media ${tabletMF} {
     margin-top: 40px;
     margin-right: 38px;
     padding-bottom: 24px;
-
-    /* margin-right: 38px; */
   }
 `;
 
 const ContactContainer = styled(Flex)`
-  border-top: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid ${theme.colors.gray};
   padding: 24px 16px;
+  margin-bottom: 16px;
+  background: ${theme.colors.white};
   @media ${tabletMF} {
     padding: 0;
     border: none;
@@ -259,9 +271,11 @@ const ContactContainer = styled(Flex)`
 `;
 
 const DeliveryContainer = styled(Flex)`
-  border-top: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid ${theme.colors.gray};
+  border-bottom: 1px solid ${theme.colors.gray};
   padding: 16px;
+  margin: 16px 0;
+  background: ${theme.colors.white};
   @media ${tabletMF} {
     padding: 32px 0;
     border: none;
@@ -269,33 +283,40 @@ const DeliveryContainer = styled(Flex)`
 `;
 
 const PaymentContainer = styled(Box)`
-  border-top: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid ${theme.colors.gray};
   padding: 16px;
+  margin-top: 16px;
+  background: ${theme.colors.white};
   @media ${tabletMF} {
     padding: 0;
     border: none;
   }
 `;
 
+const ButtonContainer = styled(Box)`
+  background: ${theme.colors.white};
+  padding: 0 16px 16px 16px;
+`;
+
 const H2 = styled.h2`
   font-family: Roboto;
   font-size: 24px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 32px;
   margin-bottom: 0;
 `;
 
 const FlexStyled = styled(Flex)`
   padding: 12px 12px 12px 12px;
-  background: #fafafa;
+  background: ${theme.colors.gray2};
+  border: 1px solid ${theme.colors.gray};
 `;
 
 const RadioInputContainer = styled(Flex)`
   border-radius: 6px 6px 0px 0px;
-  background: #f0f5ff;
-  border: 1px solid #3362ab;
+  background: ${theme.colors.gray3};
+  border: 1px solid ${theme.colors.blue};
   padding: 16px;
   margin-top: 12px;
 
@@ -315,27 +336,25 @@ const StyledButton = styled.button`
   border: none;
   text-transform: uppercase;
   padding: 16px 32px;
-  background: #009900;
-  color: White;
+  background: ${theme.colors.green};
+  color: ${theme.colors.white};
   border-radius: 4px;
   font-weight: 600;
   margin: 16px 0;
   cursor: pointer;
   box-shadow: 0px 4px 10px 0px rgba(67, 40, 16, 0.24);
 
-  /* Color emphasis on hover */
   &:hover {
-    background: #007700;
+    background: ${theme.colors.green2};
   }
 
-  /* Color emphasis when active */
   &:active {
-    background: #00cc00;
+    background: ${theme.colors.green3};
   }
 `;
 
 const StyledSpan = styled.span<{ fontSize?: string }>`
-  color: #828282;
+  color: ${theme.colors.gray4};
   font-size: ${({ fontSize }) => fontSize || '14px'};
 `;
 

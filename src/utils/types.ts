@@ -1,16 +1,5 @@
 import { z } from "zod";
 
-// export const InputFieldSchema = z.object({
-//     email: z.string().email().max(30, "Email can't exceed 30 characters"),
-//     name: z.string().max(20, 'name must be atleast 10 characters'),
-//     lastName: z.string().max(20, 'lastName must be atleast 10 characters'),
-//     address: z.string().max(20, 'address must be atleast 10 characters'),
-//     city: z.string().max(20, 'city must be atleast 10 characters'),
-//     state: z.string().max(20, 'state must be atleast 10 characters'),
-//     zip: z.string().max(20, 'zip must be atleast 10 characters'),
-//     country: z.string().max(20, 'country must be atleast 10 characters'),
-//   });
-
 
 export const InputFieldSchema = z.object({
   email: z.string().min(1, 'Field is required').email('Invalid email format').max(50, 'Email must be at most 50 characters'),
@@ -23,25 +12,10 @@ export const InputFieldSchema = z.object({
   state: z.string().min(2, 'Field is required').max(50, 'State must be at most 50 characters'),
   zip: z.string().min(4, 'Field is required').max(20, 'Zip code must be at most 20 characters'),
   country: z.string().min(2, 'Field is required').max(50, 'Country must be at most 50 characters'),
-  cardNumber: z.string().refine(
-    value => /^\d{16}$/.test(value),
-    {
-      message: 'Card number must be a 16-digit number.',
-    }
-  ),
-  expirationDate: z.string().refine(
-    value => /^\d{2}\/\d{2}$/.test(value),
-    {
-      message: 'Expiration date must be in MM/YY format.',
-    }
-  ),
-  cvvCode: z.string().refine(
-    value => /^\d{3,4}$/.test(value),
-    {
-      message: 'CVV code must be a 3 or 4-digit number.',
-    }
-  ),
+  cardNumber: z.string().min(1,'Field is required').max(16,'Must not exceed 16 characters'),
+  expirationDate: z.string(),
   securityCode: z.string().min(3).max(4),
+  nameOnCard: z.string().min(2).max(20),
 });
 
   export type TInputFieldSchema = z.infer<typeof InputFieldSchema>;
@@ -52,14 +26,15 @@ export const InputFieldSchema = z.object({
     name = 'name',
     lastName = 'lastName',
     address ='address',
+    addressAuto ='addressAuto',
     city = 'city',
     zip = 'zip',
     state = 'state',
     country = 'country',
     cardNumber = 'cardNumber',
-    expiration = 'expiration',
+    expirationDate = 'expirationDate',
     securityCode ='securityCode',
-    nameOnCard ='nameOnCard,'
+    nameOnCard ='nameOnCard'
   }
 
 
