@@ -32,10 +32,13 @@ const StyledContainer = styled(Box)`
   padding: 16px 16px 64px 16px;
   margin: 0 auto;
   width: 375px;
+  border: 1px solid ${theme.colors.gray};
   @media ${tabletMF} {
-    padding: 40px 40px 40px 38px;
+    margin-top: 50px;
+    padding: 0;
     width: 100%;
-    max-width: 500px;
+    max-width: 405px;
+    border: none;
   }
 `;
 
@@ -49,6 +52,10 @@ const ParagraphStyled = styled.p`
   font-size: 12px;
   line-height: 16px;
   color: ${theme.colors.black3};
+
+  @media ${tabletMF} {
+    width: 359px;
+  }
 `;
 
 const TypographyStyled = styled.div`
@@ -60,7 +67,7 @@ const TypographyStyled = styled.div`
   margin-bottom: 16px;
 
   p {
-    width: 340px;
+    width: 345px;
 
     @media ${tabletMF} {
       width: 530px;

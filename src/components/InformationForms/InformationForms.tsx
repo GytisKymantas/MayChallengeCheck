@@ -74,12 +74,15 @@ export const InformationForms = () => {
 
   return (
     <FormStyled onSubmit={handleSubmit(onSubmit)}>
-      <PrefillBox onClick={hiddenClick}>Shift+click me to prefill</PrefillBox>
       <Box>
         <ContactContainer
           flexDirection='column'
           gap={isTabletMF ? '16px' : '12px'}
         >
+          <PrefillBox onClick={hiddenClick}>
+            Shift+click me to prefill
+          </PrefillBox>
+
           <H2>Contact</H2>
           <InputField
             name={StorageKeys.email}
@@ -91,10 +94,7 @@ export const InformationForms = () => {
           />
         </ContactContainer>
 
-        <DeliveryContainer
-          flexDirection='column'
-          gap={isTabletMF ? '16px' : '12px'}
-        >
+        <DeliveryContainer flexDirection='column' gap='16px'>
           <H2>Delivery</H2>
           <Flex gap='12px'>
             <InputField
@@ -153,7 +153,7 @@ export const InformationForms = () => {
             />
             <InputField
               name={StorageKeys.zip}
-              placeholder='Zip / Postal Code'
+              placeholder='ZIP / Postal Code'
               register={register}
               errors={errors?.[StorageKeys.zip]?.message}
               value={watch(StorageKeys.zip)}
@@ -172,7 +172,7 @@ export const InformationForms = () => {
       </Box>
       <PaymentContainer>
         <Box>
-          <H2>Payment</H2>
+          <H2 marginBottom='8px'>Payment</H2>
           <StyledSpan fontSize='12px'>
             All transactions are secure and encrypted.
           </StyledSpan>
@@ -265,6 +265,7 @@ const FormStyled = styled.form`
 `;
 
 const ContactContainer = styled(Flex)`
+  position: relative;
   border-bottom: 1px solid ${theme.colors.gray};
   padding: 24px 16px;
   margin-bottom: 16px;
@@ -301,15 +302,22 @@ const PaymentContainer = styled(Box)`
 const ButtonContainer = styled(Box)`
   background: ${theme.colors.white};
   padding: 0 16px 16px 16px;
+
+  @media ${tabletMF} {
+    padding: 0;
+  }
 `;
 
-const H2 = styled.h2`
+const H2 = styled.h2<{ marginBottom?: string }>`
   font-family: Roboto;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
   line-height: 32px;
-  margin-bottom: 0;
+  margin-bottom: ${({ marginBottom }) => marginBottom || '0'};
+  @media ${tabletMF} {
+    margin-bottom: 0;
+  }
 `;
 
 const FlexStyled = styled(Flex)`
@@ -345,9 +353,13 @@ const StyledButton = styled.button`
   color: ${theme.colors.white};
   border-radius: 4px;
   font-weight: 600;
-  margin: 16px 0;
+  margin-bottom: 16px;
   cursor: pointer;
   box-shadow: 0px 4px 10px 0px rgba(67, 40, 16, 0.24);
+
+  @media ${tabletMF} {
+    margin: 16px 0;
+  }
 
   &:hover {
     background: ${theme.colors.green2};
@@ -377,5 +389,8 @@ const PrefillBox = styled(Box)`
   padding: 5px 10px;
   border-radius: 10px;
   cursor: pointer;
-  color: white;
+  color: ${theme.colors.white};
+  position: absolute;
+  right: 0;
+  top: 0;
 `;

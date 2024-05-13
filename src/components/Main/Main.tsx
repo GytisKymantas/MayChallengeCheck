@@ -44,7 +44,7 @@ const BoxStyled = styled(Box)`
 const GrayCover = styled(Box)`
   position: absolute;
   width: 100%;
-  height: 120vh;
+  height: 104vh;
   top: 73px;
   background: ${theme.colors.white2};
   opacity: 1.1;

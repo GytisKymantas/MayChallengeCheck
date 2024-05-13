@@ -4,7 +4,7 @@ import { ReactComponent as CashbackLogo } from '../components/ProductSummary/ico
 
 export const BENEFITS_DATA = [
   {
-    logo: <ServiceLogo />,
+    logo: <CashbackLogo />,
     header: '90-Day Money Back Guarantee',
     description:
       "We love our products and we're confident you will too! If you're not in love with your LogoIpsum product, our easy return and refund policy is designed to make things as easy as possible for you.",
@@ -16,7 +16,7 @@ export const BENEFITS_DATA = [
       'Everyone that tries LogoIpsum says it’s a must-have. We invest a lot of love and care into making our products, so you can enjoy seeing results when using it.',
   },
   {
-    logo: <CashbackLogo />,
+    logo: <ServiceLogo />,
     header: 'Professional Customer Support',
     description:
       'Our customer service works 24/7 for your satisfaction. Feel free to reach out to us anytime.',

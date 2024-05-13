@@ -7,6 +7,7 @@ import {
 } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 import { theme } from '../../styles/theme';
+import { tabletMF } from '../../styles/useQuery';
 import {
   StorageKeys,
   TInputFieldKey,
@@ -158,7 +159,8 @@ export const Label = styled.label<{
   transform: ${(props) =>
     props.hasInput
       ? 'translate(18px, 18px) scale(0.8)'
-      : 'translate(18px, 32px) scale(1)'};
+      : 'translate(18px, 34px) scale(1)'};
+
   transform-origin: left;
 
   transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
@@ -171,13 +173,17 @@ export const Label = styled.label<{
 const InputStyled = styled.input<{ isError?: boolean; hasInput?: boolean }>`
   box-sizing: border-box;
   width: 100%;
-  height: 49.5px;
+  height: 52px;
   padding: 16px;
   transition: all 0.2s ease-out;
   color: ${theme.colors.black};
   border: 1px solid ${theme.colors.gray};
   background-clip: padding-box;
   border-radius: 6px;
+
+  @media ${tabletMF} {
+    height: 49.5px;
+  }
 
   ${({ hasInput }) =>
     hasInput &&

@@ -39,7 +39,7 @@ export const ProductSummary = () => {
         )}
         {isOverView && (
           <>
-            <Flex gap='16px'>
+            <ImageContainer gap='16px'>
               <img src={Product} alt='product' />{' '}
               <Flex justifyContent='space-between' alignItems='center'>
                 <StyledSpan>
@@ -47,7 +47,7 @@ export const ProductSummary = () => {
                 </StyledSpan>
                 <StyledSpan>$299.97</StyledSpan>
               </Flex>
-            </Flex>
+            </ImageContainer>
             <Divider />
             <Flex justifyContent='space-between'>
               <StyledSpan>Subtotal</StyledSpan>
@@ -75,6 +75,7 @@ export const StyledContainer = styled(Box)`
   padding: 16px 16px 0 16px;
   width: 100%;
   border-bottom: 1px solid ${theme.colors.gray};
+  border-top: 1px solid ${theme.colors.gray};
 
   @media ${tabletMF} {
     padding: 40px 40px 0 38px;
@@ -106,4 +107,14 @@ export const Divider = styled.div<{ isWithoutBottomMargin?: boolean }>`
 const StyledSpan = styled.span<{ fontSize?: string }>`
   font-size: ${({ fontSize }) => fontSize || '14px'};
   color: ${theme.colors.black2};
+`;
+
+const ImageContainer = styled(Flex)`
+  padding-top: 10px;
+  border-top: 1px solid ${theme.colors.gray};
+
+  @media ${tabletMF} {
+    padding: unset;
+    border-top: none;
+  }
 `;

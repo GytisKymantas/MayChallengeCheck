@@ -16,6 +16,7 @@ import {
   UseFormWatch,
 } from 'react-hook-form';
 import { boolean } from 'zod';
+import { tabletMF } from '../../styles/useQuery';
 
 interface SelectorProps {
   watch: UseFormWatch<TInputFieldSchema>;
@@ -82,9 +83,11 @@ export const Selector = ({
 };
 
 const FlexStyled = styled(Flex)<{ hasInput?: boolean }>`
-  height: 49.5px;
-
+  height: 52px;
   position: relative;
+  @media ${tabletMF} {
+    height: 49.5px;
+  }
 `;
 
 export const LabelContainer = styled(Flex)<{ isError?: boolean }>`
@@ -103,12 +106,16 @@ export const LabelContainer = styled(Flex)<{ isError?: boolean }>`
 
 const StyledSelect = styled.select<{ isError?: boolean; hasInput?: boolean }>`
   width: 100%;
-  height: 49.5px;
+  height: 52px;
   padding: 11px;
   border: 1px solid ${theme.colors.gray};
   border-radius: 0.5rem;
   appearance: none;
   transition: all 0.2s ease-out;
+
+  @media ${tabletMF} {
+    height: 49.5px;
+  }
 
   ${({ isError }) =>
     isError &&
