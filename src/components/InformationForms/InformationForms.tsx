@@ -1,31 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   TInputFieldSchema,
   InputFieldSchema,
   StorageKeys,
-  PlaceInfo,
 } from '../../utils/types';
 import { InputField } from '../input/InputField';
 import { Flex } from '../Flex';
 import { Box } from '../Box';
 import styled from 'styled-components';
-import {
-  AddressAutocomplete,
-  GOOGLE_GEOLOCATION_KEY,
-} from '../input/AdressAutocomplete';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import { getAddressDetails } from '../../utils/address-autocomplete';
-import { caStates, countries, usStates } from '../../utils/countries';
-import { getValue } from '@testing-library/user-event/dist/utils';
+import { AddressAutocomplete } from '../input/AdressAutocomplete';
+
+import { countries } from '../../utils/countries';
 import { Selector } from '../input/Select';
 import { ReactComponent as CardLogo } from './icons/cards.svg';
 import { ReactComponent as Lock } from './icons/lock.svg';
 import { tabletMF, useQuery } from '../../styles/useQuery';
-import { constants } from 'fs/promises';
 import { setToLocalStorage } from '../../utils/storageHandler';
-import { handleChangeExpiration } from '../../utils/validationFunctions';
+
 import { CardInputField } from '../input/CardInputField';
 import { theme } from '../../styles/theme';
 
@@ -36,6 +29,8 @@ export const InformationForms = () => {
     watch,
     getValues,
     setValue,
+    setError,
+    clearErrors,
     control,
     formState: { errors, isSubmitting },
   } = useForm<TInputFieldSchema>({
@@ -45,37 +40,35 @@ export const InformationForms = () => {
     },
   });
   const [selectedOption, setSelectedOption] = useState('option1');
+
   const { isTabletMF } = useQuery();
 
-  console.log(getValues(), 'getValues');
   const handleOptionChange = (event: any) => {
     setSelectedOption(event.target.value);
   };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = (data: TInputFieldSchema) => {
+    const serializedObject = JSON.stringify(data);
+    setToLocalStorage('data', serializedObject);
   };
 
-  const isAddressError = errors?.[StorageKeys.addressAuto]?.message;
+  const isAddressError = errors?.[StorageKeys.address]?.message;
 
   const hiddenClick = (e: { shiftKey: boolean }) => {
-    const date = new Date();
-
     if (e?.shiftKey) {
       setValue('city', 'Houston');
       setValue('country', 'United States');
       setValue('name', 'Todd');
       setValue('lastName', 'Baker');
       setValue('email', 'TestEmail@gmail.com');
-      // setValue('addressAuto', 'Easy street 1');
       setValue('cardNumber', '4242424242424242');
-      // setValue('addressAuto.label', 'Tood Baker');
-      setValue('address', 'Tood Baker');
+      setValue('address', 'Easy Street 1');
       setValue('zip', '49416');
       setValue('nameOnCard', 'Todd Baker');
       setValue('expirationDate', '11/24');
       setValue('securityCode', '112');
-      setValue('state', 'Alabama');
+      setValue('state', 'NY');
+      clearErrors();
     }
   };
 
@@ -124,9 +117,9 @@ export const InformationForms = () => {
             control={control}
             setValue={setValue}
             isAddressError={isAddressError}
-            initialData={''}
-            watch={watch}
+            initialData={watch('address')}
             getValues={getValues}
+            setError={setError}
           />
 
           {!isTabletMF && (
@@ -136,6 +129,7 @@ export const InformationForms = () => {
               register={register}
               errors={errors?.[StorageKeys.city]?.message}
               value={watch(StorageKeys.city)}
+              watch={watch}
             />
           )}
           <Flex gap='12px'>
@@ -152,6 +146,7 @@ export const InformationForms = () => {
             <Selector
               watch={watch}
               name={StorageKeys.state}
+              register={register}
               getValues={getValues}
               setValue={setValue}
               errors={errors?.[StorageKeys.state]?.message}
@@ -168,6 +163,7 @@ export const InformationForms = () => {
             watch={watch}
             countries={countries}
             name={StorageKeys.country}
+            register={register}
             getValues={getValues}
             setValue={setValue}
             errors={errors?.[StorageKeys.country]?.message}
@@ -225,19 +221,24 @@ export const InformationForms = () => {
                 getValues={getValues}
               />
             </Flex>
-            <InputField
+
+            <CardInputField
               name={StorageKeys.nameOnCard}
               placeholder='Name on card'
               register={register}
               errors={errors?.[StorageKeys.nameOnCard]?.message}
               value={watch(StorageKeys.nameOnCard)}
+              setValue={setValue}
+              getValues={getValues}
             />
           </FlexStyled>
         </Flex>
       </PaymentContainer>
 
       <ButtonContainer>
-        <StyledButton type='submit'>complete order</StyledButton>
+        <StyledButton type='submit'>
+          {isSubmitting ? 'loading' : 'complete order'}
+        </StyledButton>
         <Flex justifyContent='center' gap='8px' alignItems='center'>
           <Lock />
           <StyledSpan>All transactions are secure and encrypted</StyledSpan>

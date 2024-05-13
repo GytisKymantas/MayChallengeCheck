@@ -1,8 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Flex } from '../Flex';
-import { ReactComponent as Logo } from './logo.svg';
-import { ReactComponent as Cart } from './cart.svg';
+import { ReactComponent as Logo } from './icons/logo.svg';
+import { ReactComponent as Cart } from './icons/cart.svg';
+import { theme } from '../../styles/theme';
 
 export const Navigation = () => {
   return (
@@ -17,7 +17,7 @@ export const Navigation = () => {
 
 const ContainerStyled = styled.div`
   padding: 16px;
-  border-bottom: 1px solid var(--cc-shopify-border-dividers, #e0e0e0);
+  border-bottom: 1px solid ${theme.colors.gray};
 `;
 
 const FlexStyled = styled(Flex)`

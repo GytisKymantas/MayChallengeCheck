@@ -1,10 +1,10 @@
-import React from 'react';
 import styled from 'styled-components';
 
 import { Box } from '../../Box';
 import { Flex } from '../../Flex';
 import { BENEFITS_DATA } from '../../../utils/constants';
 import { tabletMF } from '../../../styles/useQuery';
+import { theme } from '../../../styles/theme';
 
 export const BenefitsSection = () => {
   return (
@@ -28,7 +28,7 @@ export const BenefitsSection = () => {
 };
 
 const StyledContainer = styled(Box)`
-  background: #f5f5f5;
+  background: ${theme.colors.white2};
   padding: 16px 16px 64px 16px;
   margin: 0 auto;
   width: 375px;
@@ -39,12 +39,8 @@ const StyledContainer = styled(Box)`
   }
 `;
 
-const BenefitContainer = styled(Flex)`
-  margin-bottom: 15px;
-`;
-
 const HeaderStyled = styled.h2`
-  color: #333;
+  color: ${theme.colors.black2};
   font-weight: 500;
   font-size: 12px;
 `;
@@ -52,7 +48,7 @@ const HeaderStyled = styled.h2`
 const ParagraphStyled = styled.p`
   font-size: 12px;
   line-height: 16px;
-  color: #5c5c5c;
+  color: ${theme.colors.black3};
 `;
 
 const TypographyStyled = styled.div`
@@ -60,7 +56,7 @@ const TypographyStyled = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  color: #333333;
+  color: ${theme.colors.black2};
   margin-bottom: 16px;
 
   p {
@@ -74,7 +70,7 @@ const TypographyStyled = styled.div`
     content: '';
     height: 1px;
     width: 50%;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid ${theme.colors.gray};
     margin-right: 16px;
 
     @media ${tabletMF} {
@@ -86,7 +82,7 @@ const TypographyStyled = styled.div`
     content: '';
     height: 1px;
     width: 54%;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid ${theme.colors.gray};
     margin-left: 16px;
     @media ${tabletMF} {
       width: 100%;

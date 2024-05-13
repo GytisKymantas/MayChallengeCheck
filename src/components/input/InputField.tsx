@@ -1,18 +1,18 @@
+import { UseFormRegister } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 import { theme } from '../../styles/theme';
-import { StorageKeys } from '../../utils/types';
-import { handleChangeExpiration } from '../../utils/validationFunctions';
+import { TInputFieldKey, TInputFieldSchema } from '../../utils/types';
 import { Flex } from '../Flex';
 
 interface InputFieldProps {
-  name: string;
-  placeholder: String;
-  register: any;
-  errors?: any;
+  name: TInputFieldKey;
+  placeholder: string;
+  register: UseFormRegister<TInputFieldSchema>;
+  errors?: string;
   value?: string;
-  setValue?: any;
+  // getValues?: any;
+  type?: string;
   watch?: any;
-  type?: any;
 }
 
 export const InputField = ({
@@ -21,17 +21,13 @@ export const InputField = ({
   register,
   errors,
   value,
+  // getValues,
+  watch,
   type = 'text',
-  setValue,
 }: InputFieldProps) => {
-  const hasInput = !!value && !errors;
-
-  // const onChangeValidation = (e: any) => {
-  //   if (name === StorageKeys.expirationDate) {
-  //     handleChangeExpiration(e, setValue);
-  //   }
-  // };
-
+  const hasInput = !!value;
+  // console.log(value, `current value${name}`);
+  // console.log(errors, `error currnet${name}`);
   return (
     <FlexStyled flexDirection='column'>
       <LabelContainer>
@@ -68,7 +64,6 @@ export const Label = styled.label<{
   error: boolean;
   isAddress?: boolean;
 }>`
-  z-index: 4;
   pointer-events: none;
   transform: ${(props) =>
     props.hasInput

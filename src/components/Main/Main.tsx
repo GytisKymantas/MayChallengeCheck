@@ -25,6 +25,7 @@ export const Main = () => {
             <GrayCover />
           </>
         )}
+
         <BenefitsSection />
       </BoxStyled>
     </FlexStyled>

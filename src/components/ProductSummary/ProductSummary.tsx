@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Flex } from '../Flex';
 import { ReactComponent as ArrowUp } from './icons/arrow_up.svg';
 import { ReactComponent as ArrowDown } from './icons/arrow_down.svg';
+import Product from './icons/product1.png';
+
 import { tabletMF, useQuery } from '../../styles/useQuery';
 import { theme } from '../../styles/theme';
 
@@ -29,7 +31,7 @@ export const ProductSummary = () => {
                 onClick={() => setIsOverView(!isOverView)}
               >
                 <StyledSpan>Order overview </StyledSpan>
-                {isOverView ? <ArrowDown /> : <ArrowUp />}
+                {isOverView ? <ArrowUp /> : <ArrowDown />}
               </Flex>
               <span>$299.97</span>
             </OrderSummaryContainer>
@@ -38,7 +40,7 @@ export const ProductSummary = () => {
         {isOverView && (
           <>
             <Flex gap='16px'>
-              <img src='icons/product2.png' alt='product' />{' '}
+              <img src={Product} alt='product' />{' '}
               <Flex justifyContent='space-between' alignItems='center'>
                 <StyledSpan>
                   <strong>LogoIpsum IPL</strong>
@@ -97,7 +99,7 @@ export const Divider = styled.div<{ isWithoutBottomMargin?: boolean }>`
   margin: ${({ isWithoutBottomMargin }) =>
     isWithoutBottomMargin ? '16px 0 0 0' : '16px 0'};
   @media ${tabletMF} {
-    margin: 16px;
+    margin: 16px 0;
   }
 `;
 

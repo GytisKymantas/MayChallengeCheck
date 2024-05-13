@@ -1,64 +1,70 @@
-import { useState } from 'react';
 import { ICountry, IState } from '../../utils/countries';
 import styled, { css } from 'styled-components';
-import { ErrorSpan } from './InputField';
 import { Flex } from '../Flex';
 import { ReactComponent as ArrowDown } from '../ProductSummary/icons/arrow_down.svg';
 import { Box } from '../Box';
-import { StorageKeys } from '../../utils/types';
+import {
+  StorageKeys,
+  TInputFieldKey,
+  TInputFieldSchema,
+} from '../../utils/types';
 import { caStates, usStates } from '../../utils/countries';
 import { theme } from '../../styles/theme';
+import {
+  UseFormGetValues,
+  UseFormSetValue,
+  UseFormWatch,
+} from 'react-hook-form';
+import { boolean } from 'zod';
 
 interface SelectorProps {
-  watch: any;
-  getValues: any;
-  errors?: string;
-  setValue: any;
+  watch: UseFormWatch<TInputFieldSchema>;
+  getValues: UseFormGetValues<TInputFieldSchema>;
+  setValue: UseFormSetValue<TInputFieldSchema>;
+  register: any;
+  name: TInputFieldKey;
+  errors?: any;
   countries?: ICountry[];
-  name?: any;
 }
 
 export const Selector = ({
   watch,
   getValues,
   setValue,
+  register,
   errors,
   name,
   countries,
 }: SelectorProps) => {
-  const [stateSelected, setStateSelected] = useState(false);
   const isCountrySelector = name === StorageKeys.country;
-  const handleChangeSelector = (event: any) => {
-    const selectedState = event.target.value;
-    setValue(name, selectedState);
-    setStateSelected(true);
-  };
 
   const States =
     getValues(StorageKeys.country) === 'Canada' ? caStates : usStates;
   const AdjustedsDataArray = isCountrySelector ? countries : States;
 
-  const hasInput = !errors && !!watch(name);
+  const hasInput = !!getValues(name);
+  console.log(errors, 'just errors');
 
   return (
     <>
-      <FlexStyled flexDirection='column' justifyContent='flex-end'>
-        <LabelContainer>
+      <FlexStyled
+        flexDirection='column'
+        justifyContent='flex-end'
+        hasInput={hasInput}
+      >
+        <LabelContainer isError={!!errors}>
           {isCountrySelector ? 'Country' : 'State / Province'}
         </LabelContainer>
         <Box position='absolute' top='15px' right='15px'>
           <ArrowDown />
         </Box>
         <StyledSelect
-          id='stateSelect'
-          onChange={handleChangeSelector}
+          {...register(name)}
           isError={!!errors}
           hasInput={hasInput}
           value={getValues(name)}
         >
-          {!stateSelected && !isCountrySelector && (
-            <option>Select state</option>
-          )}
+          {!hasInput && <option value=''>Select state</option>}
 
           {AdjustedsDataArray?.map(({ value, label }, index) => {
             return (
@@ -76,16 +82,23 @@ export const Selector = ({
   );
 };
 
-const FlexStyled = styled(Flex)`
+const FlexStyled = styled(Flex)<{ hasInput?: boolean }>`
+  height: 49.5px;
+
   position: relative;
 `;
 
-export const LabelContainer = styled(Flex)`
+export const LabelContainer = styled(Flex)<{ isError?: boolean }>`
   width: 100% !important;
   position: absolute;
   top: 2.6px;
   left: 12px;
   color: ${theme.colors.gray4};
+  ${({ isError }) =>
+    isError &&
+    css`
+      color: ${theme.colors.red};
+    `}
   font-size: 12px;
 `;
 
@@ -101,7 +114,6 @@ const StyledSelect = styled.select<{ isError?: boolean; hasInput?: boolean }>`
   ${({ isError }) =>
     isError &&
     css`
-      margin-bottom: 0.6rem;
       border: 1px solid ${theme.colors.red};
       color: ${theme.colors.red};
     `}
@@ -113,6 +125,10 @@ const StyledSelect = styled.select<{ isError?: boolean; hasInput?: boolean }>`
     `}
 `;
 
-const OptionStyled = styled.option`
-  color: ${theme.colors.gray4};
+export const ErrorSpan = styled.span`
+  position: absolute;
+  color: ${theme.colors.red};
+  font-size: 12px;
+  font-weight: 400;
+  bottom: -22px;
 `;

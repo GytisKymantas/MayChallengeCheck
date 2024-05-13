@@ -1,24 +1,26 @@
+import styled from 'styled-components';
+import { Box } from './components/Box';
 import { Main } from './components/Main/Main';
 import { Navigation } from './components/Navigation/Navigation';
 import './styles/index.css';
 import { theme } from './styles/theme';
-import { useQuery } from './styles/useQuery';
+import { tabletMF } from './styles/useQuery';
 
 function App() {
-  const { isTabletMF } = useQuery();
   return (
-    <div
-      className='App'
-      style={{
-        background: isTabletMF
-          ? `${theme.colors.white}`
-          : `${theme.colors.white2}`,
-      }}
-    >
+    <StyledContainer className='App'>
       <Navigation />
       <Main />
-    </div>
+    </StyledContainer>
   );
 }
 
 export default App;
+
+const StyledContainer = styled(Box)`
+  background: ${theme.colors.white2};
+
+  @media ${tabletMF} {
+    background: ${theme.colors.white};
+  }
+`;

@@ -1,22 +1,28 @@
 import React, { useState } from 'react';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import { Controller } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  UseFormGetValues,
+  UseFormSetError,
+  UseFormSetValue,
+} from 'react-hook-form';
 import { getAddressDetails } from '../../utils/address-autocomplete';
 import { countries } from '../../utils/countries';
 import { ErrorSpan } from './InputField';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Flex } from '../Flex';
 import { Box } from '../Box';
-import { watch } from 'fs';
 import { theme } from '../../styles/theme';
+import { TInputFieldSchema } from '../../utils/types';
 
 interface AddressAutoProps {
-  control: any;
-  setValue: any;
+  control: Control<TInputFieldSchema>;
   isAddressError?: string;
-  getValues: any;
-  initialData?: any;
-  watch: any;
+  initialData?: string;
+  getValues: UseFormGetValues<TInputFieldSchema>;
+  setValue: UseFormSetValue<TInputFieldSchema>;
+  setError: UseFormSetError<TInputFieldSchema>;
 }
 
 export const GOOGLE_GEOLOCATION_KEY = 'AIzaSyAiAZ_gPFKxGR39WiYMIrlV2p0YjXWgx0c';
@@ -26,13 +32,13 @@ export const AddressAutocomplete = ({
   setValue,
   isAddressError,
   getValues,
-  watch,
+  setError,
   initialData,
 }: AddressAutoProps) => {
   const [data, setData] = useState(initialData);
   const [key, setKey] = useState<any>(new Date().getTime());
   const handleAddressSelect = async () => {
-    const details = await getAddressDetails(getValues('addressAuto'));
+    const details = await getAddressDetails(getValues('address'));
     const country = countries.find(
       (country) => country?.value === details?.country
     );
@@ -45,11 +51,27 @@ export const AddressAutocomplete = ({
       setValue('country', country.label ?? '');
       setValue('city', details.city ?? '');
       setValue('state', state.value ?? '');
+      setError('address', {
+        type: 'manual',
+        message: '',
+      });
+      setError('city', {
+        type: 'manual',
+        message: '',
+      });
+      setError('state', {
+        type: 'manual',
+        message: '',
+      });
+      setError('zip', {
+        type: 'manual',
+        message: '',
+      });
     }
   };
 
   const handleInputChange = (
-    inputValue: any,
+    inputValue: string,
     { action }: { action: string }
   ) => {
     if (action === 'input-change') {
@@ -58,8 +80,8 @@ export const AddressAutocomplete = ({
     }
   };
 
-  const getSelectStyles = (isError?: boolean) => ({
-    control: (provided: any, state: { isFocused: boolean }) => ({
+  const getSelectStyles = (isError?: boolean, hasInput?: boolean) => ({
+    control: (provided: any) => ({
       ...provided,
       boxSizing: 'border-box',
       width: '100%',
@@ -67,18 +89,21 @@ export const AddressAutocomplete = ({
       padding: '8.5px 8.5px 8.5px 12px',
       transition: 'all 0.2s ease-out',
       color: isError ? `${theme.colors.red}` : `${theme.colors.black}`,
-      border: isError
-        ? `1px solid ${theme.colors.red}`
-        : `1px solid ${theme.colors.gray}`,
-      backgroundClip: 'padding-box',
+      border:
+        hasInput && !isError
+          ? `1px solid ${theme.colors.green}`
+          : isError
+          ? `1px solid ${theme.colors.red}`
+          : `1px solid ${theme.colors.gray}`,
       borderRadius: '0.5rem',
     }),
   });
+  console.log(isAddressError, 'isAddressError inside address');
 
   return (
     <Controller
       control={control}
-      name='addressAuto'
+      name='address'
       render={({ field: { onChange } }) => {
         const handleChange = (selectedAddress: any) => {
           onChange(selectedAddress);
@@ -93,7 +118,7 @@ export const AddressAutocomplete = ({
             <LabelContainer>
               {' '}
               <Label
-                hasInput={!!data}
+                hasInput={!!data || !!initialData}
                 isAddress={true}
                 error={!!isAddressError}
               >
@@ -116,12 +141,12 @@ export const AddressAutocomplete = ({
                 value: data
                   ? ({ label: data, value: data } as any)
                   : ('' as any),
-                inputValue: data ?? ('bam' as any),
+                inputValue: initialData,
                 noOptionsMessage: () => null,
                 onChange: handleChange,
                 onInputChange: handleInputChange,
                 placeholder: '',
-                styles: getSelectStyles(!!isAddressError),
+                styles: getSelectStyles(!!isAddressError, !!initialData),
 
                 components: {
                   DropdownIndicator: () => null,

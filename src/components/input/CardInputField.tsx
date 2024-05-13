@@ -1,21 +1,26 @@
-import { getValue } from '@testing-library/user-event/dist/utils';
-import { watch } from 'fs';
+import {
+  UseFormRegister,
+  UseFormGetValues,
+  UseFormSetValue,
+} from 'react-hook-form';
 import styled, { css } from 'styled-components';
 import { theme } from '../../styles/theme';
-import { StorageKeys } from '../../utils/types';
-import { handleChangeExpiration } from '../../utils/validationFunctions';
+import {
+  StorageKeys,
+  TInputFieldKey,
+  TInputFieldSchema,
+} from '../../utils/types';
 import { Flex } from '../Flex';
 
 interface InputFieldProps {
-  name: string;
-  placeholder: String;
-  register: any;
-  errors?: any;
+  name: TInputFieldKey;
+  placeholder: string;
+  errors?: string;
   value?: string;
-  setValue?: any;
-  watch?: any;
-  type?: any;
-  getValues?: any;
+  register: UseFormRegister<TInputFieldSchema>;
+  getValues: UseFormGetValues<TInputFieldSchema>;
+  setValue: UseFormSetValue<TInputFieldSchema>;
+  type?: string;
 }
 
 export const CardInputField = ({
@@ -28,7 +33,7 @@ export const CardInputField = ({
   setValue,
   getValues,
 }: InputFieldProps) => {
-  const hasInput = !!value && !errors;
+  const hasInput = !!value;
 
   const onChangeValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -47,8 +52,21 @@ export const CardInputField = ({
     }
 
     if (name === StorageKeys.expirationDate) {
+      let exprationDateTrim = trimmedValue;
+      if (value.length >= 2) {
+        exprationDateTrim =
+          trimmedValue.substring(0, 2) + '/' + trimmedValue.substring(2);
+      }
+
       if (value.length <= 5) {
-        return setValue(name, trimmedValue);
+        return setValue(name, exprationDateTrim);
+      }
+    }
+
+    if (name === StorageKeys.nameOnCard) {
+      const onlyLetters = value.replace(/[^A-Za-z\s]/g, '');
+      if (value.length <= 30) {
+        return setValue(name, onlyLetters);
       }
     }
 
@@ -86,6 +104,13 @@ export const LabelContainer = styled(Flex)`
   position: absolute;
   top: -15.6px;
   left: 0;
+`;
+
+export const ErrorSpan = styled.span`
+  color: ${theme.colors.red};
+  font-size: 12px;
+  margin-bottom: 0.45rem;
+  font-weight: 400;
 `;
 
 export const Label = styled.label<{
@@ -138,11 +163,4 @@ const InputStyled = styled.input<{ isError?: boolean; hasInput?: boolean }>`
       margin-bottom: 0.6rem;
       border-color: ${theme.colors.red};
     `}
-`;
-
-export const ErrorSpan = styled.span`
-  color: ${theme.colors.red};
-  font-size: 12px;
-  margin-bottom: 0.45rem;
-  font-weight: 400;
 `;
