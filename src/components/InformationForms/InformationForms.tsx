@@ -74,7 +74,7 @@ export const InformationForms = () => {
 
   return (
     <FormStyled onSubmit={handleSubmit(onSubmit)}>
-      <div onClick={hiddenClick}>Shift+click to prefill</div>
+      <PrefillBox onClick={hiddenClick}>Shift+click me to prefill</PrefillBox>
       <Box>
         <ContactContainer
           flexDirection='column'
@@ -197,7 +197,8 @@ export const InformationForms = () => {
               placeholder='Card Number'
               register={register}
               errors={errors?.[StorageKeys.cardNumber]?.message}
-              value={watch(StorageKeys.cardNumber)}
+              value={getValues(StorageKeys.cardNumber)}
+              watch={watch}
               setValue={setValue}
               getValues={getValues}
             />
@@ -207,7 +208,8 @@ export const InformationForms = () => {
                 placeholder='Expiration (MM/YY)'
                 register={register}
                 errors={errors?.[StorageKeys.expirationDate]?.message}
-                value={watch(StorageKeys.expirationDate)}
+                value={getValues(StorageKeys.expirationDate)}
+                watch={watch}
                 setValue={setValue}
                 getValues={getValues}
               />
@@ -216,9 +218,10 @@ export const InformationForms = () => {
                 placeholder='Security code'
                 register={register}
                 errors={errors?.[StorageKeys.securityCode]?.message}
-                value={watch(StorageKeys.securityCode)}
+                value={getValues(StorageKeys.securityCode)}
                 setValue={setValue}
                 getValues={getValues}
+                watch={watch}
               />
             </Flex>
 
@@ -227,9 +230,10 @@ export const InformationForms = () => {
               placeholder='Name on card'
               register={register}
               errors={errors?.[StorageKeys.nameOnCard]?.message}
-              value={watch(StorageKeys.nameOnCard)}
+              value={getValues(StorageKeys.nameOnCard)}
               setValue={setValue}
               getValues={getValues}
+              watch={watch}
             />
           </FlexStyled>
         </Flex>
@@ -363,4 +367,15 @@ const Label = styled.label`
   display: flex;
   align-items: center;
   font-size: 14px;
+`;
+
+const PrefillBox = styled(Box)`
+  background: ${theme.colors.green3};
+  margin: 0 auto;
+  width: 120px;
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
 `;

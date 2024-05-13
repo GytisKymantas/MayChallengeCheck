@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import {
   Control,
@@ -86,7 +86,7 @@ export const AddressAutocomplete = ({
       boxSizing: 'border-box',
       width: '100%',
       height: '100%',
-      padding: '8.5px 8.5px 8.5px 12px',
+      padding: '8.5px 8.5px 8.5px 3px',
       transition: 'all 0.2s ease-out',
       color: isError ? `${theme.colors.red}` : `${theme.colors.black}`,
       border:
@@ -98,7 +98,6 @@ export const AddressAutocomplete = ({
       borderRadius: '0.5rem',
     }),
   });
-  console.log(isAddressError, 'isAddressError inside address');
 
   return (
     <Controller
@@ -138,9 +137,7 @@ export const AddressAutocomplete = ({
               selectProps={{
                 // @ts-ignore
                 key,
-                value: data
-                  ? ({ label: data, value: data } as any)
-                  : ('' as any),
+                value: data ? { label: data, value: data } : ('' as any),
                 inputValue: initialData,
                 noOptionsMessage: () => null,
                 onChange: handleChange,
@@ -186,4 +183,5 @@ const Label = styled.label<{
   color: ${({ error }) =>
     error ? `${theme.colors.red}` : `${theme.colors.gray4}`};
   line-height: 1;
+  font-size: 14px;
 `;

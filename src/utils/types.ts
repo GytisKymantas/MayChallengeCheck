@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 export const InputFieldSchema = z.object({
   email: z.string().min(1, 'Field is required').email('Invalid email format').max(50, 'Email must be at most 50 characters'),
   name: z.string().min(2, 'Field is required').max(50, 'Name must be at most 50 characters'),
@@ -11,9 +10,9 @@ export const InputFieldSchema = z.object({
   zip: z.string().min(4, 'Field is required').max(20, 'Zip code must be at most 20 characters'),
   country: z.string().min(2, 'Field is required').max(50, 'Country must be at most 50 characters'),
   cardNumber: z.string().min(1,'Field is required').max(16,'Must not exceed 16 characters'),
-  expirationDate: z.string().min(1,'Field is required').max(5,'Must not exceed 4 characters'),
-  securityCode: z.string().min(3).max(4),
-  nameOnCard: z.string().min(2).max(20),
+  expirationDate: z.string().min(5,'Field is required').max(5,'Must not exceed 4 characters'),
+  securityCode: z.string().min(3,'Field is required').max(4),
+  nameOnCard: z.string().min(2,'Field is required').max(20),
 });
 
   export type TInputFieldSchema = z.infer<typeof InputFieldSchema>;

@@ -1,7 +1,9 @@
+import { ChangeEvent } from 'react';
 import {
   UseFormRegister,
   UseFormGetValues,
   UseFormSetValue,
+  UseFormWatch,
 } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 import { theme } from '../../styles/theme';
@@ -21,6 +23,7 @@ interface InputFieldProps {
   getValues: UseFormGetValues<TInputFieldSchema>;
   setValue: UseFormSetValue<TInputFieldSchema>;
   type?: string;
+  watch: UseFormWatch<TInputFieldSchema>;
 }
 
 export const CardInputField = ({
@@ -32,8 +35,10 @@ export const CardInputField = ({
   type = 'text',
   setValue,
   getValues,
+  watch,
 }: InputFieldProps) => {
   const hasInput = !!value;
+  watch();
 
   const onChangeValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -87,7 +92,37 @@ export const CardInputField = ({
         hasInput={hasInput}
         {...register(name)}
         value={getValues(name)}
-        onChange={(e: any) => onChangeValidation(e)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+          const value = e.target.value;
+
+          if (name === StorageKeys.securityCode) {
+            if (value.length <= 3) {
+              register(name).onChange(e);
+              return onChangeValidation(e);
+            }
+          }
+
+          if (name === StorageKeys.expirationDate) {
+            if (value.length <= 5) {
+              register(name).onChange(e);
+              return onChangeValidation(e);
+            }
+          }
+
+          if (name === StorageKeys.nameOnCard) {
+            if (value.length <= 30) {
+              register(name).onChange(e);
+              return onChangeValidation(e);
+            }
+          }
+
+          if (name === StorageKeys.cardNumber) {
+            if (value.length <= 16) {
+              register(name).onChange(e);
+              return onChangeValidation(e);
+            }
+          }
+        }}
       />
 
       {errors && <ErrorSpan>{errors}</ErrorSpan>}

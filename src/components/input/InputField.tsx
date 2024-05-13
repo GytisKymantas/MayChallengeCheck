@@ -1,4 +1,4 @@
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, UseFormWatch } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { TInputFieldKey, TInputFieldSchema } from '../../utils/types';
@@ -10,9 +10,8 @@ interface InputFieldProps {
   register: UseFormRegister<TInputFieldSchema>;
   errors?: string;
   value?: string;
-  // getValues?: any;
   type?: string;
-  watch?: any;
+  watch?: UseFormWatch<TInputFieldSchema>;
 }
 
 export const InputField = ({
@@ -21,13 +20,10 @@ export const InputField = ({
   register,
   errors,
   value,
-  // getValues,
-  watch,
   type = 'text',
 }: InputFieldProps) => {
   const hasInput = !!value;
-  // console.log(value, `current value${name}`);
-  // console.log(errors, `error currnet${name}`);
+
   return (
     <FlexStyled flexDirection='column'>
       <LabelContainer>

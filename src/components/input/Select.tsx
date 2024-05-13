@@ -43,7 +43,6 @@ export const Selector = ({
   const AdjustedsDataArray = isCountrySelector ? countries : States;
 
   const hasInput = !!getValues(name);
-  console.log(errors, 'just errors');
 
   return (
     <>
